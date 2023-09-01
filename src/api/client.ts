@@ -46,7 +46,7 @@ export class MedcaseClient {
 
     private configRequest = () => {
         this.api.interceptors.request.use(async (request: InternalAxiosRequestConfig): Promise<InternalAxiosRequestConfig> => {
-            this.logger.silly("Axios request started", {method: request.method, url: request.url});
+            this.logger.silly("Medcase SDK request started", {method: request.method, url: request.url});
 
             request.headers["Authorization"] = await this.medcaseAuthApi.getAuthHeader();
 
@@ -56,7 +56,7 @@ export class MedcaseClient {
 
     private configResponse = () => {
         this.api.interceptors.response.use((response) => {
-            this.logger.silly("Axios response obtained", {url: response.headers.url, status: response.status});
+            this.logger.silly("Medcase SDK response obtained", {url: response.headers.url, status: response.status});
             return response;
         });
     }
@@ -98,7 +98,6 @@ export class MedcaseClient {
 
                 if (beforeRetryHook)
                     await beforeRetryHook();
-
 
                 await new Promise((resolve) => setTimeout(resolve, calculateRetryDelay(attempt)));
 
