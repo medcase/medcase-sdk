@@ -13,6 +13,15 @@ export class MedcaseClient {
     private medcaseAuthApi: MedcaseAuthClient;
     private readonly clientCredentials: ClientCredentials;
     private readonly apiUrl: string;
+    private requestInterceptor = async (request: InternalAxiosRequestConfig): Promise<InternalAxiosRequestConfig> => {
+        this.logger.silly("Medcase SDK request started", {method: request.method, url: request.url});
+        request.headers["Authorization"] = await this.medcaseAuthApi.getAuthHeader();
+        return request;
+    };
+    private responseInterceptor = (response: AxiosResponse) => {
+        this.logger.silly("Medcase SDK response obtained", {url: response.headers.url, status: response.status});
+        return response;
+    };
 
     constructor(config: {
         clientCredentials: ClientCredentials,
@@ -29,8 +38,8 @@ export class MedcaseClient {
             clientCredentials: config.clientCredentials
         });
 
-        this.configRequest();
-        this.configResponse();
+        this.api.interceptors.request.use(this.requestInterceptor);
+        this.api.interceptors.response.use(this.responseInterceptor);
     }
 
     public executeCommand = async <T>(command: MedcaseClientCommand<T>): Promise<T> => {
@@ -42,23 +51,6 @@ export class MedcaseClient {
 
         const response: AxiosResponse = await this.makeRetryCallWithRefreshTokenRetryHook(retryCall)
         return command.resourceMapper(response.data);
-    }
-
-    private configRequest = () => {
-        this.api.interceptors.request.use(async (request: InternalAxiosRequestConfig): Promise<InternalAxiosRequestConfig> => {
-            this.logger.silly("Medcase SDK request started", {method: request.method, url: request.url});
-
-            request.headers["Authorization"] = await this.medcaseAuthApi.getAuthHeader();
-
-            return request;
-        });
-    }
-
-    private configResponse = () => {
-        this.api.interceptors.response.use((response) => {
-            this.logger.silly("Medcase SDK response obtained", {url: response.headers.url, status: response.status});
-            return response;
-        });
     }
 
     private makeRetryCallWithRefreshTokenRetryHook = (retryCall: () => Promise<AxiosResponse>) => {

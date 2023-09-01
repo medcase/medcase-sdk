@@ -1,22 +1,22 @@
-import {AuthClientCredentials, AuthRequestBody, AuthToken, ClientCredentials} from "./schemas/client.interfaces";
+import {AuthConfig, AuthRequestBody, AuthToken, ClientCredentials} from "./schemas/client.interfaces";
 import axios, {AxiosResponse} from "axios";
 import {appConfig} from "../config";
 
 const DEFAULT_HEADERS: object = {"Content-Type": "application/json"};
 const DEFAULT_GRANT_TYPE: string = "client_credentials";
 
-const TEST_AUTH_CREDENTIALS: AuthClientCredentials = {
+const TEST_AUTH_CONFIG: AuthConfig = {
     apiOAuthUrl: appConfig.MEDCASE_OAUTH_URL_STAGING,
     oauthAudience: appConfig.MEDCASE_OAUTH_AUDIENCE_STAGING
 };
-const PRODUCTION_AUTH_CREDENTIALS: AuthClientCredentials = {
+const PRODUCTION_AUTH_CONFIG: AuthConfig = {
     apiOAuthUrl: appConfig.MEDCASE_OAUTH_URL_PRODUCTION,
     oauthAudience: appConfig.MEDCASE_OAUTH_AUDIENCE_PRODUCTION
 };
 
 export class MedcaseAuthClient {
     private authToken: AuthToken;
-    private readonly authClientCredentials: AuthClientCredentials;
+    private readonly authConfig: AuthConfig;
     private readonly clientCredentials: ClientCredentials;
 
     constructor(config: {
@@ -24,7 +24,7 @@ export class MedcaseAuthClient {
         clientCredentials: ClientCredentials
     }) {
         this.clientCredentials = config.clientCredentials;
-        this.authClientCredentials = config.testEnv ? TEST_AUTH_CREDENTIALS : PRODUCTION_AUTH_CREDENTIALS;
+        this.authConfig = config.testEnv ? TEST_AUTH_CONFIG : PRODUCTION_AUTH_CONFIG;
         this.authToken = {};
     }
 
@@ -38,7 +38,7 @@ export class MedcaseAuthClient {
     public refreshAuthToken = async (): Promise<void> => {
         const authRequestBody: AuthRequestBody = this.provideAuthRequestBody();
 
-        this.authToken = await axios.post(this.authClientCredentials.apiOAuthUrl, authRequestBody, DEFAULT_HEADERS)
+        this.authToken = await axios.post(this.authConfig.apiOAuthUrl, authRequestBody, DEFAULT_HEADERS)
             .then((authTokenResponse: AxiosResponse): AuthToken => this.generateAuthToken(authTokenResponse.data.access_token, authTokenResponse.data.expires_in));
     };
 
@@ -58,7 +58,7 @@ export class MedcaseAuthClient {
     private provideAuthRequestBody = (): AuthRequestBody => ({
         client_id: this.clientCredentials.clientId,
         client_secret: this.clientCredentials.clientSecret,
-        audience: this.authClientCredentials.oauthAudience,
+        audience: this.authConfig.oauthAudience,
         grant_type: DEFAULT_GRANT_TYPE
     });
 }

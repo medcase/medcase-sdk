@@ -4,7 +4,7 @@ export interface ClientCredentials {
     projectId: string,
 }
 
-export interface AuthClientCredentials {
+export interface AuthConfig {
     apiOAuthUrl: string,
     oauthAudience: string
 }
