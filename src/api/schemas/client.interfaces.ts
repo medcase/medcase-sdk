@@ -2,6 +2,9 @@ export interface ClientCredentials {
     clientSecret: string,
     clientId: string,
     projectId: string,
+}
+
+export interface AuthClientCredentials {
     apiOAuthUrl: string,
     oauthAudience: string
 }
@@ -18,3 +21,5 @@ export interface AuthRequestBody {
     audience: string,
     grant_type: string
 }
+
+export type RetryCallError = { response: { status: number } };

@@ -4,7 +4,6 @@ export interface MedcaseClientCommand<T> {
     body?: unknown;
     method: HttpMethod;
     resourceMapper: (resource: T) => T;
-    env: MedcaseEnvironment;
 }
 
 export enum HttpMethod {
@@ -12,11 +11,4 @@ export enum HttpMethod {
     POST = 'post',
     PUT = 'put',
     DELETE = 'delete'
-}
-
-export enum MedcaseEnvironment {
-    DEV = 'dev',
-    PROD = 'prod',
-    TEST = 'test',
-    STAGING = 'staging'
 }

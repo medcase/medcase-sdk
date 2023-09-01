@@ -1,39 +1,54 @@
 import axios, {AxiosInstance, AxiosResponse, InternalAxiosRequestConfig} from "axios";
 import {MedcaseAuthClient} from "./auth.client";
-import {ClientCredentials} from "./schemas/client.interfaces";
+import {ClientCredentials, RetryCallError} from "./schemas/client.interfaces";
 import {AppLogger} from "@medcase/logger-lib";
-import {makeRetryCall} from "./utils/make.retry.call";
-import {MedcaseClientCommand, MedcaseEnvironment} from "./schemas/client.command";
+import {MedcaseClientCommand} from "./schemas/client.command";
 import {appConfig} from "../config";
 
+const MEDCASE_UNAUTHORIZED_STATUS = 401;
+
 export class MedcaseClient {
+    private logger: AppLogger;
     private api: AxiosInstance;
     private medcaseAuthApi: MedcaseAuthClient;
+    private readonly clientCredentials: ClientCredentials;
+    private readonly apiUrl: string;
 
-    constructor(private clientCredentials: ClientCredentials, private logger: AppLogger) {
+    constructor(config: {
+        clientCredentials: ClientCredentials,
+        logger: AppLogger,
+        testEnv?: boolean
+    }) {
+        this.logger = config.logger;
+        this.clientCredentials = config.clientCredentials;
+        this.apiUrl = config.testEnv ? appConfig.MEDCASE_STAGING_API_URL : appConfig.MEDCASE_PRODUCTION_API_URL;
+
         this.api = axios.create();
-        this.medcaseAuthApi = new MedcaseAuthClient();
+        this.medcaseAuthApi = new MedcaseAuthClient({
+            testEnv: config.testEnv,
+            clientCredentials: config.clientCredentials
+        });
+
         this.configRequest();
         this.configResponse();
     }
 
     public executeCommand = async <T>(command: MedcaseClientCommand<T>): Promise<T> => {
-        const retryCall = async (): Promise<AxiosResponse> => axios[command.method]<AxiosResponse>(this.buildPath(command.env, command.path), command.body)
+        const retryCall = async (): Promise<AxiosResponse> => axios.request<AxiosResponse>({
+            method: command.method,
+            url: this.apiUrl,
+            data: command.body
+        })
 
         const response: AxiosResponse = await this.makeRetryCallWithRefreshTokenRetryHook(retryCall)
-
         return command.resourceMapper(response.data);
     }
-
-    private buildPath = (env: MedcaseEnvironment, pathSuffix: string): string =>
-        `${appConfig.MEDCASE_API_URL_PREFIX}${env}${appConfig.MEDCASE_API_URL_SUFFIX}${pathSuffix}`;
-
 
     private configRequest = () => {
         this.api.interceptors.request.use(async (request: InternalAxiosRequestConfig): Promise<InternalAxiosRequestConfig> => {
             this.logger.silly("Axios request started", {method: request.method, url: request.url});
 
-            request.headers["Authorization"] = await this.medcaseAuthApi.getAuthHeader(this.clientCredentials);
+            request.headers["Authorization"] = await this.medcaseAuthApi.getAuthHeader();
 
             return request;
         });
@@ -47,20 +62,50 @@ export class MedcaseClient {
     }
 
     private makeRetryCallWithRefreshTokenRetryHook = (retryCall: () => Promise<AxiosResponse>) => {
-        const medcaseInvalidTokenRetryCondition = (error: { response: { status: number } }) => {
-            const MEDCASE_UNAUTHORIZED_STATUS = 401;
-            return !!error.response && error.response.status === MEDCASE_UNAUTHORIZED_STATUS;
-        }
+        const medcaseInvalidTokenRetryCondition = (error: {
+            response: { status: number }
+        }) => !!error.response && error.response.status === MEDCASE_UNAUTHORIZED_STATUS;
 
-        const refreshTokenRetryHook = async () => {
-            this.logger.warn("Medcase auth token was invalid, but expiration time wasn't exceeded. This should happened only in development environment after refreshing token manually");
-            await this.medcaseAuthApi.refreshAuthToken(this.clientCredentials);
-        }
+        const refreshTokenRetryHook = async (): Promise<void> =>
+            this.medcaseAuthApi.refreshAuthToken();
 
-        return makeRetryCall(
+        const refreshTokenRetryCount = 1;
+
+        return this.makeRetryCall(
             retryCall,
-            refreshTokenRetryHook,
             medcaseInvalidTokenRetryCondition,
-        );
+            refreshTokenRetryHook,
+            refreshTokenRetryCount,
+        )
+    };
+
+    private makeRetryCall = async (
+        requestFunc: () => Promise<AxiosResponse>,
+        retryCondition: ((error: RetryCallError) => boolean),
+        beforeRetryHook?: () => Promise<void> | void,
+        retries = 3,
+    ): Promise<AxiosResponse> => {
+        const calculateRetryDelay = (retryCount: number, multiplierInMillis = 1000) =>
+            Math.pow(2, retryCount) * multiplierInMillis;
+
+        const makeRetryCallRec = async (attempt = 0): Promise<AxiosResponse> => {
+            try {
+                attempt += 1;
+                return requestFunc();
+            } catch (error) {
+                if (attempt > retries || !retryCondition(error as RetryCallError))
+                    throw error;
+
+                if (beforeRetryHook)
+                    await beforeRetryHook();
+
+
+                await new Promise((resolve) => setTimeout(resolve, calculateRetryDelay(attempt)));
+
+                return makeRetryCallRec(attempt);
+            }
+        }
+
+        return makeRetryCallRec();
     };
 }

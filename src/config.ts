@@ -1,7 +1,5 @@
-import {config} from "dotenv-flow";
 import * as process from "process";
 
-config();
 export const required = (key: string, variable?: string) => {
     if (!variable)
         throw new Error(`Required property is missing: ${key} on level ${process.env.NODE_ENV}`);
@@ -9,6 +7,10 @@ export const required = (key: string, variable?: string) => {
 };
 
 export const appConfig = {
-    MEDCASE_API_URL_SUFFIX: required("MEDCASE_API_URL_SUFFIX", process.env.MEDCASE_API_URL_SUFFIX),
-    MEDCASE_API_URL_PREFIX: required("MEDCASE_API_URL_PREFIX", process.env.MEDCASE_API_URL_PREFIX),
+    MEDCASE_STAGING_API_URL: required("MEDCASE_STAGING_API_URL", process.env.MEDCASE_STAGING_API_URL),
+    MEDCASE_PRODUCTION_API_URL: required("MEDCASE_PRODUCTION_API_URL", process.env.MEDCASE_PRODUCTION_API_URL),
+    MEDCASE_OAUTH_URL_STAGING: required("MEDCASE_OAUTH_URL_STAGING", process.env.MEDCASE_OAUTH_URL_STAGING),
+    MEDCASE_OAUTH_AUDIENCE_STAGING: required("MEDCASE_OAUTH_AUDIENCE_STAGING", process.env.MEDCASE_OAUTH_AUDIENCE_STAGING),
+    MEDCASE_OAUTH_URL_PRODUCTION: required("MEDCASE_OAUTH_URL_PRODUCTION", process.env.MEDCASE_OAUTH_URL_PRODUCTION),
+    MEDCASE_OAUTH_AUDIENCE_PRODUCTION: required("MEDCASE_OAUTH_AUDIENCE_PRODUCTION", process.env.MEDCASE_OAUTH_AUDIENCE_PRODUCTION),
 };
