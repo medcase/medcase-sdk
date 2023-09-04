@@ -1,34 +1,34 @@
 import axios, {AxiosInstance, AxiosResponse, InternalAxiosRequestConfig} from "axios";
 import {MedcaseAuthClient} from "./auth.client";
 import {ClientCredentials, RetryCallError} from "./schemas/client.interfaces";
-import {AppLogger} from "@medcase/logger-lib";
+import {AppLogger, getDefaultLogger} from "@medcase/logger-lib";
 import {MedcaseClientCommand} from "./schemas/client.command";
 import {appConfig} from "../config";
 
 const MEDCASE_UNAUTHORIZED_STATUS = 401;
 
 export class MedcaseClient {
-    private logger: AppLogger;
+    private logger?: AppLogger; //TODO
     private api: AxiosInstance;
     private medcaseAuthApi: MedcaseAuthClient;
     private readonly clientCredentials: ClientCredentials;
     private readonly apiUrl: string;
     private requestInterceptor = async (request: InternalAxiosRequestConfig): Promise<InternalAxiosRequestConfig> => {
-        this.logger.silly("Medcase SDK request started", {method: request.method, url: request.url});
+        //this.logger.silly("Medcase SDK request started", {method: request.method, url: request.url}); //TODO
         request.headers["Authorization"] = await this.medcaseAuthApi.getAuthHeader();
         return request;
     };
     private responseInterceptor = (response: AxiosResponse) => {
-        this.logger.silly("Medcase SDK response obtained", {url: response.headers.url, status: response.status});
+        //this.logger.silly("Medcase SDK response obtained", {url: response.headers.url, status: response.status}); //TODO
         return response;
     };
 
     constructor(config: {
         clientCredentials: ClientCredentials,
-        logger: AppLogger,
+        logger?: AppLogger, //TODO remove "?"
         testEnv?: boolean
     }) {
-        this.logger = config.logger;
+        this.logger = config.logger
         this.clientCredentials = config.clientCredentials;
         this.apiUrl = config.testEnv ? appConfig.MEDCASE_STAGING_API_URL : appConfig.MEDCASE_PRODUCTION_API_URL;
 

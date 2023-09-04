@@ -12,7 +12,11 @@ export interface ParticipantMeeting {
 }
 
 export enum MeetingStatus {
-
+    CREATED = "CREATED",
+    CANCELLED = "CANCELLED",
+    FINISHED = "FINISHED",
+    PATIENT_ABSENT = "PATIENT_ABSENT",
+    STARTED = "STARTED",
 }
 
 export interface BookParticipantMeetingRequest {
