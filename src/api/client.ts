@@ -45,7 +45,7 @@ export class MedcaseClient {
     public executeCommand = async <T>(command: MedcaseClientCommand<T>): Promise<T> => {
         const retryCall = async (): Promise<AxiosResponse> => axios.request<AxiosResponse>({
             method: command.method,
-            url: this.apiUrl,
+            url: `${this.apiUrl}${command.path}`,
             data: command.body
         })
 
