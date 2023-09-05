@@ -1,7 +1,6 @@
 export interface ClientCredentials {
     clientSecret: string,
     clientId: string,
-    projectId: string,
 }
 
 export interface AuthConfig {

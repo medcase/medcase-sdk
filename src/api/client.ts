@@ -1,9 +1,9 @@
 import axios, {AxiosInstance, AxiosResponse, InternalAxiosRequestConfig} from "axios";
 import {MedcaseAuthClient} from "./auth.client";
 import {ClientCredentials, RetryCallError} from "./schemas/client.interfaces";
-import {AppLogger} from "@medcase/logger-lib";
 import {MedcaseClientCommand} from "./schemas/client.command";
 import {appConfig} from "../config";
+import {AppLogger} from "@medcase/logger-lib";
 
 const MEDCASE_UNAUTHORIZED_STATUS = 401;
 
@@ -15,7 +15,6 @@ export class MedcaseClient {
     private readonly apiUrl: string;
     private requestInterceptor = async (request: InternalAxiosRequestConfig): Promise<InternalAxiosRequestConfig> => {
         this.logger.silly("Medcase SDK request started", {method: request.method, url: request.url});
-        request.headers["Authorization"] = await this.medcaseAuthApi.getAuthHeader();
         return request;
     };
     private responseInterceptor = (response: AxiosResponse) => {
@@ -43,14 +42,16 @@ export class MedcaseClient {
     }
 
     public executeCommand = async <T>(command: MedcaseClientCommand<T>): Promise<T> => {
+        const authHeader: string = await this.medcaseAuthApi.getAuthHeader();
         const retryCall = async (): Promise<AxiosResponse> => axios.request<AxiosResponse>({
             method: command.method,
-            url: `${this.apiUrl}/telehealth/project/${this.clientCredentials.projectId}${command.path}`,
-            data: command.body
+            url: `${this.apiUrl}${command.path}`,
+            data: command.body,
+            headers: {'Authorization': authHeader},
         })
 
         const response: AxiosResponse = await this.makeRetryCallWithRefreshTokenRetryHook(retryCall)
-        return command.resourceMapper(response.data);
+        return response.data.map(command.resourceMapper);
     }
 
     private makeRetryCallWithRefreshTokenRetryHook = (retryCall: () => Promise<AxiosResponse>) => {
@@ -83,7 +84,8 @@ export class MedcaseClient {
         const makeRetryCallRec = async (attempt = 0): Promise<AxiosResponse> => {
             try {
                 attempt += 1;
-                return requestFunc();
+                const result: AxiosResponse = await requestFunc();
+                return result;
             } catch (error) {
                 if (attempt > retries || !retryCondition(error as RetryCallError))
                     throw error;
