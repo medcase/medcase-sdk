@@ -1,8 +1,6 @@
-import {RetrieveMeetingsParameters} from "../clients/meetings.client";
-import {Availability} from "./medcase.objects/availability";
+import {RetrieveMeetingsParameters} from "../clients/availabilities.client";
 
 type Parameters = RetrieveMeetingsParameters
-type RetrievedValues = Availability[]
-export interface Client {
-    retrieve?: (parameters: Parameters) => Promise<RetrievedValues>;
+export interface Client<T> {
+    retrieve?: (parameters: Parameters) => Promise<T>;
 }

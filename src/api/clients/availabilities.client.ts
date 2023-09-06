@@ -9,7 +9,7 @@ import {DateRange} from "../schemas/date.range";
 
 export type RetrieveMeetingsParameters = { projectId: string, dateRange: DateRange, clinicianId: string };
 
-export class MeetingsClient implements Client {
+export class AvailabilitiesClient implements Client<Availability[]> {
     constructor(private apiClient: ApiClient) {
     }
 
