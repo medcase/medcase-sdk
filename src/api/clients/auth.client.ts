@@ -1,30 +1,17 @@
-import {AuthConfig, AuthRequestBody, AuthToken, ClientCredentials} from "./schemas/client.interfaces";
+import {AuthRequestBody, AuthToken, ClientCredentials} from "../schemas/client.interfaces";
 import axios, {AxiosResponse} from "axios";
-import {appConfig} from "../config";
 
 const DEFAULT_HEADERS: object = {"Content-Type": "application/json"};
 const DEFAULT_GRANT_TYPE: string = "client_credentials";
 
-const TEST_AUTH_CONFIG: AuthConfig = {
-    apiOAuthUrl: appConfig.MEDCASE_OAUTH_URL_STAGING,
-    oauthAudience: appConfig.MEDCASE_OAUTH_AUDIENCE_STAGING
-};
-const PRODUCTION_AUTH_CONFIG: AuthConfig = {
-    apiOAuthUrl: appConfig.MEDCASE_OAUTH_URL_PRODUCTION,
-    oauthAudience: appConfig.MEDCASE_OAUTH_AUDIENCE_PRODUCTION
-};
-
-export class MedcaseAuthClient {
+export class AuthClient {
     private authToken: AuthToken;
-    private readonly authConfig: AuthConfig;
     private readonly clientCredentials: ClientCredentials;
 
-    constructor(config: {
-        testEnv?: boolean,
+    constructor(
         clientCredentials: ClientCredentials
-    }) {
-        this.clientCredentials = config.clientCredentials;
-        this.authConfig = config.testEnv ? TEST_AUTH_CONFIG : PRODUCTION_AUTH_CONFIG;
+    ) {
+        this.clientCredentials = clientCredentials;
         this.authToken = {};
     }
 
@@ -38,7 +25,7 @@ export class MedcaseAuthClient {
     public refreshAuthToken = async (): Promise<void> => {
         const authRequestBody: AuthRequestBody = this.provideAuthRequestBody();
 
-        this.authToken = await axios.post(this.authConfig.apiOAuthUrl, authRequestBody, DEFAULT_HEADERS)
+        this.authToken = await axios.post(this.clientCredentials.authConfig.apiOAuthUrl, authRequestBody, DEFAULT_HEADERS)
             .then((authTokenResponse: AxiosResponse): AuthToken => this.generateAuthToken(authTokenResponse.data.access_token, authTokenResponse.data.expires_in));
     };
 
@@ -58,7 +45,7 @@ export class MedcaseAuthClient {
     private provideAuthRequestBody = (): AuthRequestBody => ({
         client_id: this.clientCredentials.clientId,
         client_secret: this.clientCredentials.clientSecret,
-        audience: this.authConfig.oauthAudience,
+        audience: this.clientCredentials.authConfig.oauthAudience,
         grant_type: DEFAULT_GRANT_TYPE
     });
 }

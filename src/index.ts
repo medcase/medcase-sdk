@@ -1,2 +1,4 @@
-export * from './api/client';
-export * from './api/schemas/client.command';
+export * from './api/medcase.sdk';
+export * from './api/schemas/client.interfaces';
+export * from './api/schemas/medcase.objects/availability';
+export * from './api/schemas/http.method';
