@@ -1,4 +1,4 @@
-export const medcaseConstants = {
+export const paths = {
     TELEHEALTH: "telehealth",
     PROJECT: "project",
     AVAILABILITY: "availability",
@@ -6,3 +6,4 @@ export const medcaseConstants = {
     PATIENT: "patient",
     SURVEY: "survey"
 }
+

@@ -1,11 +1,11 @@
 import {Availability} from "../schemas/medcase.objects/availability";
 import {ApiClient} from "./api.client";
-import {AxiosResponse} from "axios";
 import {HttpMethod} from "../schemas/http.method";
-import {medcaseConstants} from "../../config";
-import {buildPath} from "../../utils/build.query";
+import {paths} from "../../config";
 import {Client} from "../schemas/client";
 import {DateRange} from "../schemas/date.range";
+import {buildQuery} from "../../utils/build.query";
+import {AxiosResponse} from "axios";
 
 export type RetrieveAvailabilityParameters = { projectId: string, dateRange: DateRange, clinicianId: string };
 
@@ -13,18 +13,15 @@ export class AvailabilitiesClient implements Client<Availability[]> {
     constructor(private apiClient: ApiClient) {
     }
 
-    retrieve = async ({projectId, dateRange, clinicianId}: RetrieveAvailabilityParameters): Promise<Availability[]> => {
-        const availabilityPath: string = buildPath(
-            [medcaseConstants.TELEHEALTH, medcaseConstants.PROJECT, projectId, medcaseConstants.AVAILABILITY],
-            {startDate: dateRange.startDate, endDate: dateRange.endDate, clinicianId: clinicianId}
-        );
+    retrieve = (p: RetrieveAvailabilityParameters): Promise<Availability[]> => this.apiClient.call({
+        method: HttpMethod.GET,
+        path: `/${paths.TELEHEALTH}/${paths.PROJECT}/${p.projectId}${paths.AVAILABILITY}${buildQuery({
+            startDate: p.dateRange.startDate,
+            endDate: p.dateRange.endDate,
+            clinicianId: p.clinicianId
+        })}`
+    }).then((r: AxiosResponse) => r.data.map(this.mapAvailability));
 
-        const response: AxiosResponse = await this.apiClient.makeRetryCallWithRefreshTokenRetryHook({
-            method: HttpMethod.GET,
-            path: availabilityPath
-        })
-        return response.data.map(this.mapAvailability);
-    }
 
     private mapAvailability = (availability: Availability): Availability => ({
         startDateTime: availability.startDateTime,
