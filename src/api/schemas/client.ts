@@ -1,6 +1,9 @@
 import {RetrieveAvailabilityParameters} from "../clients/availabilities.client";
+import {CreateSurveyParameters} from "../clients/survey.client";
 
-type Parameters = RetrieveAvailabilityParameters
+type RetrieveParameters = RetrieveAvailabilityParameters
+type CreateParameters = CreateSurveyParameters
 export interface Client<T> {
-    retrieve?: (parameters: Parameters) => Promise<T>;
+    retrieve?: (parameters: RetrieveParameters) => Promise<T>;
+    create?: (parameters: CreateParameters) => Promise<T>;
 }
