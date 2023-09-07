@@ -1,6 +1,6 @@
-import {RetrieveMeetingsParameters} from "../clients/availabilities.client";
+import {RetrieveAvailabilityParameters} from "../clients/availabilities.client";
 
-type Parameters = RetrieveMeetingsParameters
+type Parameters = RetrieveAvailabilityParameters
 export interface Client<T> {
     retrieve?: (parameters: Parameters) => Promise<T>;
 }

@@ -7,13 +7,13 @@ import {buildPath} from "../../utils/build.query";
 import {Client} from "../schemas/client";
 import {DateRange} from "../schemas/date.range";
 
-export type RetrieveMeetingsParameters = { projectId: string, dateRange: DateRange, clinicianId: string };
+export type RetrieveAvailabilityParameters = { projectId: string, dateRange: DateRange, clinicianId: string };
 
 export class AvailabilitiesClient implements Client<Availability[]> {
     constructor(private apiClient: ApiClient) {
     }
 
-    retrieve = async ({projectId, dateRange, clinicianId}: RetrieveMeetingsParameters): Promise<Availability[]> => {
+    retrieve = async ({projectId, dateRange, clinicianId}: RetrieveAvailabilityParameters): Promise<Availability[]> => {
         const availabilityPath: string = buildPath(
             [medcaseConstants.TELEHEALTH, medcaseConstants.PROJECT, projectId, medcaseConstants.AVAILABILITY],
             {startDate: dateRange.startDate, endDate: dateRange.endDate, clinicianId: clinicianId}
