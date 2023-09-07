@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "module": "commonjs",
+    "target": "esnext",
+    "types": ["node"],
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": ".",
+    "skipLibCheck": true,
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "strict": true,
+    "jsx": "react"
+  },
+  "include": [
+    "src/**/*",
+    "src/**/*.json",
+  ],
+  "exclude": [
+    "node_modules/**"
+  ]
+}

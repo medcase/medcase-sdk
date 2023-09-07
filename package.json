@@ -1,0 +1,35 @@
+{
+  "name": "medcase-sdk",
+  "version": "0.0.1",
+  "main": "dist/index.js",
+  "repository": "https://github.com/medcase/medcase-sdk",
+  "author": "Medcase",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint . --ext .ts"
+  },
+  "dependencies": {
+    "@medcase/logger-lib": "^3.2.0",
+    "axios": "^1.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.5.7",
+    "@typescript-eslint/eslint-plugin": "^6.5.0",
+    "@typescript-eslint/parser": "^6.5.0",
+    "eslint": "^7.32.0 || ^8.2.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "prettier": "^3.0.3",
+    "typescript": "^5.2.2"
+  },
+  "testRegex": "(/(src|tests)/.*\\.test)\\.ts$",
+  "moduleFileExtensions": [
+    "ts",
+    "tsx",
+    "js",
+    "jsx",
+    "json",
+    "node"
+  ]
+}
