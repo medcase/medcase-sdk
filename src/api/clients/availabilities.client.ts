@@ -4,16 +4,16 @@ import {AxiosResponse} from "axios";
 import {HttpMethod} from "../schemas/http.method";
 import {medcaseConstants} from "../../config";
 import {buildPath} from "../../utils/build.query";
-import {Client} from "../schemas/client";
+import {Client, Parameters} from "../schemas/client";
 import {DateRange} from "../schemas/date.range";
 
-export type RetrieveAvailabilityParameters = { projectId: string, dateRange: DateRange, clinicianId: string };
+export type RetrieveAvailabilityParameters = Parameters<{ dateRange: DateRange, clinicianId: string }>
 
 export class AvailabilitiesClient implements Client<Availability[]> {
     constructor(private apiClient: ApiClient) {
     }
 
-    retrieve = async ({projectId, dateRange, clinicianId}: RetrieveAvailabilityParameters): Promise<Availability[]> => {
+    retrieve = async ({ projectId, data: {dateRange, clinicianId} }: RetrieveAvailabilityParameters): Promise<Availability[]> => {
         const availabilityPath: string = buildPath(
             [medcaseConstants.TELEHEALTH, medcaseConstants.PROJECT, projectId, medcaseConstants.AVAILABILITY],
             {startDate: dateRange.startDate, endDate: dateRange.endDate, clinicianId: clinicianId}
