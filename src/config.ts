@@ -6,4 +6,5 @@ export const medcaseConstants = {
     EHR: "ehr",
     NABLA: "nabla",
     PATIENT: "patient",
+    SURVEY: "survey"
 }

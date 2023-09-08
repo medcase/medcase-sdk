@@ -1,18 +1,18 @@
 import {ApiClient} from "./api.client";
-import {Client} from "../schemas/client";
+import {Client, Parameters} from "../schemas/client";
 import {HttpMethod} from "../schemas/http.method";
 import {buildPath} from "../../utils/build.query";
 import {medcaseConstants} from "../../config";
 import {AxiosResponse} from "axios";
 import {Patient} from "../schemas/medcase.objects/patient";
 
-export type CreatePatientParameters = { projectId: string, patient: Patient };
+type CreatePatientParameters = Parameters<{ patient: Patient }>
 
 export class PatientNablaClient implements Client<Patient> {
     constructor(private apiClient: ApiClient) {
     }
 
-    create = async ({projectId, patient}: CreatePatientParameters): Promise<Patient> => {
+    create = async ({projectId, data: {patient}}: CreatePatientParameters): Promise<Patient> => {
         const patientPath: string = buildPath(
             [medcaseConstants.PROJECT, projectId, medcaseConstants.EHR, medcaseConstants.NABLA, medcaseConstants.PATIENT]
         );
