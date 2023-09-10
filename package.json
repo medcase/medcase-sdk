@@ -5,9 +5,6 @@
   "repository": "https://github.com/medcase/medcase-sdk",
   "author": "Medcase",
   "license": "MIT",
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
-  },
   "scripts": {
     "build": "tsc",
     "lint": "eslint . --ext .ts"
