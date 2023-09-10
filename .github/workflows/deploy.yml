@@ -1,0 +1,20 @@
+name: Upload
+
+on:
+  push:
+    tags:
+      - v*-release
+
+env:
+  MEDCASE_GITHUB_TOKEN: ${{ secrets.MEDCASE_GITHUB_TOKEN }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: yarn install
+      - run: yarn lint
+      - run: yarn build
+      - run: yarn publish
+
