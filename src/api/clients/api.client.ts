@@ -3,7 +3,7 @@ import {ClientCredentials, RetryCallError} from "../schemas/client.interfaces";
 import {AuthClient} from "./auth.client";
 import {AppLogger} from "@medcase/logger-lib";
 import {HttpMethod} from "../schemas/http.method";
-import {paths} from "../../config";
+import {medcaseConstants} from "../../config";
 
 export class ApiClient {
     private authApi: AuthClient;
@@ -48,7 +48,7 @@ export class ApiClient {
 
         const medcaseInvalidTokenRetryCondition = (error: {
             response: { status: number }
-        }) => !!error.response && error.response.status === paths.MEDCASE_UNAUTHORIZED_STATUS;
+        }) => !!error.response && error.response.status === medcaseConstants.MEDCASE_UNAUTHORIZED_STATUS;
 
         const refreshTokenRetryCount = 1;
 
