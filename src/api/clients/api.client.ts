@@ -15,9 +15,6 @@ export class ApiClient {
         request.headers["Authorization"] = await this.authApi.getAuthHeader();
         return request;
     };
-    private responseInterceptor = (response: AxiosResponse) => {
-        return response;
-    };
 
     constructor(config: {
         clientCredentials: ClientCredentials,
@@ -28,7 +25,6 @@ export class ApiClient {
 
         this.api = axios.create();
         this.api.interceptors.request.use(this.requestInterceptor);
-        this.api.interceptors.response.use(this.responseInterceptor);
     }
 
     call = async (parameters: {
