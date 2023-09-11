@@ -4,6 +4,7 @@ import {AuthClient} from "./auth.client";
 import {HttpMethod} from "../schemas/http.method";
 import {medcaseConstants} from "../../config";
 import {ClientCredentials} from "../schemas";
+import {ApiCallError} from "../schemas/api.call.error";
 
 export class ApiClient {
     private authApi: AuthClient;
@@ -72,9 +73,7 @@ export class ApiClient {
             } catch (error) {
                 if (attempt > retries || !retryCondition(error as RetryCallError)) {
                     const axiosError = error as AxiosError;
-
-                    const errorInfo = {code: axiosError.code, message: axiosError.message, data: axiosError.response?.data};
-                    throw Error(`Error, request cannot be proceeded. ${JSON.stringify(errorInfo)}`);
+                    throw new ApiCallError(axiosError.code, axiosError.message, JSON.stringify(axiosError.response?.data));
                 }
 
                 if (beforeRetryHook)
