@@ -8,3 +8,4 @@ export const medcaseConstants = {
     PATIENT: "patient",
     SURVEY: "survey"
 }
+

@@ -1,7 +1,4 @@
-export type Parameters <T> = {
-    projectId: string,
-    data: T
-}
+export type Parameters <T> = T & { projectId: string };
 
 export interface Client<T> {
     //eslint-disable-next-line @typescript-eslint/no-explicit-any

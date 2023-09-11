@@ -1,42 +1,33 @@
-import axios, {AxiosInstance, AxiosResponse, InternalAxiosRequestConfig} from "axios";
+import axios, {AxiosError, AxiosInstance, AxiosResponse, InternalAxiosRequestConfig} from "axios";
 import {RetryCallError} from "../schemas/client.interfaces";
 import {AuthClient} from "./auth.client";
-import {AppLogger} from "@medcase/logger-lib";
 import {HttpMethod} from "../schemas/http.method";
 import {medcaseConstants} from "../../config";
 import {ClientCredentials} from "../schemas";
+import {ApiCallError} from "../schemas/api.call.error";
 
 export class ApiClient {
     private authApi: AuthClient;
-    private logger: AppLogger;
     private api: AxiosInstance;
     private readonly apiURL: string;
 
     private requestInterceptor = async (request: InternalAxiosRequestConfig): Promise<InternalAxiosRequestConfig> => {
-        this.logger.silly("Medcase SDK request started", {method: request.method, url: request.url});
         request.headers["Authorization"] = await this.authApi.getAuthHeader();
         return request;
-    };
-    private responseInterceptor = (response: AxiosResponse) => {
-        this.logger.silly("Medcase SDK response obtained", {url: response.headers.url, status: response.status});
-        return response;
     };
 
     constructor(config: {
         clientCredentials: ClientCredentials,
-        logger: AppLogger
     }
     ) {
         this.authApi = new AuthClient(config.clientCredentials);
-        this.logger = config.logger;
         this.apiURL = config.clientCredentials.url;
 
         this.api = axios.create();
         this.api.interceptors.request.use(this.requestInterceptor);
-        this.api.interceptors.response.use(this.responseInterceptor);
     }
 
-    makeRetryCallWithRefreshTokenRetryHook = async (parameters: {
+    call = async (parameters: {
         method: HttpMethod,
         path: string,
         body?: unknown
@@ -76,8 +67,10 @@ export class ApiClient {
                 const result: AxiosResponse = await requestFunc();
                 return result;
             } catch (error) {
-                if (attempt > retries || !retryCondition(error as RetryCallError))
-                    throw error;
+                if (attempt > retries || !retryCondition(error as RetryCallError)) {
+                    const axiosError = error as AxiosError;
+                    throw new ApiCallError(axiosError.code, axiosError.message, JSON.stringify(axiosError.response?.data));
+                }
 
                 if (beforeRetryHook)
                     await beforeRetryHook();

@@ -1,4 +1,3 @@
-import {AppLogger} from "@medcase/logger-lib";
 import {ApiClient} from "./api/clients/api.client";
 import {AvailabilitiesClient} from "./api/clients/availabilities.client"
 import {SurveyClient} from "./api/clients/survey.client";
@@ -18,10 +17,7 @@ export class MedcaseSDK implements MedcaseSDKInterface {
     public patientNabla: PatientNablaClient
     public survey: SurveyClient;
 
-    constructor(config: {
-        clientCredentials: ClientCredentials,
-        logger: AppLogger,
-    }) {
+    constructor(config: { clientCredentials: ClientCredentials, }) {
         this.apiClient = new ApiClient(config);
         this.availabilities = new AvailabilitiesClient(this.apiClient);
         this.patientNabla = new PatientNablaClient(this.apiClient);
