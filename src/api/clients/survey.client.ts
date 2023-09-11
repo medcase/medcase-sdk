@@ -1,7 +1,7 @@
 import {Client} from "../schemas/client";
 import {medcaseConstants} from "../../config";
 import {HttpMethod} from "../schemas/http.method";
-import {Survey, SurveyRequest} from "../schemas/medcase.objects/survey";
+import {Survey, SurveyRequest} from "../schemas";
 import {ApiClient} from "./api.client";
 import {Parameters} from "../schemas/client";
 
@@ -12,7 +12,7 @@ export class SurveyClient implements Client<Survey> {
     }
 
     create = (p: CreateSurveyParameters): Promise<Survey> => this.apiClient.call({
-        path: `${medcaseConstants.PROJECT}/${p.projectId}/${medcaseConstants.PATIENT}/${p.patientId}/${medcaseConstants.SURVEY}`,
+        path: `/${medcaseConstants.TELEHEALTH}/${medcaseConstants.PROJECT}/${p.projectId}/${medcaseConstants.PATIENT}/${p.patientId}/${medcaseConstants.SURVEY}`,
         method: HttpMethod.POST,
         body: p.survey
     }).then(r => this.mapSurvey(r.data));

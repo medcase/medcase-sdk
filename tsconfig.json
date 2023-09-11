@@ -1,25 +1,24 @@
 {
+  "include": ["src/**/*"],
+    "exclude": ["node_modules"],
   "compilerOptions": {
-    "esModuleInterop": true,
-    "experimentalDecorators": true,
     "module": "commonjs",
     "target": "esnext",
-    "types": ["node"],
-    "moduleResolution": "node",
+    "lib": ["dom", "esnext"],
+    "importHelpers": true,
+    "declaration": true,
     "sourceMap": true,
-    "outDir": "./dist",
-    "baseUrl": ".",
-    "skipLibCheck": true,
-    "allowJs": true,
-    "resolveJsonModule": true,
     "strict": true,
-    "jsx": "react"
-  },
-  "include": [
-    "src/**/*",
-    "src/**/*.json",
-  ],
-  "exclude": [
-    "node_modules/**"
-  ]
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "allowJs": true,
+  }
 }

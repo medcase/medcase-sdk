@@ -3,7 +3,7 @@ import {Client, Parameters} from "../schemas/client";
 import {HttpMethod} from "../schemas/http.method";
 import {medcaseConstants} from "../../config";
 import {AxiosResponse} from "axios";
-import {Patient} from "../schemas/medcase.objects/patient";
+import {Patient} from "../schemas";
 
 type CreatePatientParameters = Parameters<{ patient: Patient }>
 
@@ -13,7 +13,7 @@ export class PatientNablaClient implements Client<Patient> {
 
     create = (p: CreatePatientParameters): Promise<Patient> => this.apiClient.call({
             method: HttpMethod.POST,
-            path: `${medcaseConstants.PROJECT}/${p.projectId}/${medcaseConstants.EHR}/${medcaseConstants.NABLA}/${medcaseConstants.PATIENT}`,
+            path: `/${medcaseConstants.TELEHEALTH}/${medcaseConstants.PROJECT}/${p.projectId}/${medcaseConstants.EHR}/${medcaseConstants.NABLA}/${medcaseConstants.PATIENT}`,
             body: p.patient
         }).then((r: AxiosResponse) => this.mapPatient(r.data));
 
