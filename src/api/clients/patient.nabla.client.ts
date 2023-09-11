@@ -4,7 +4,7 @@ import {HttpMethod} from "../schemas/http.method";
 import {buildPath} from "../../utils/build.query";
 import {medcaseConstants} from "../../config";
 import {AxiosResponse} from "axios";
-import {Patient} from "../schemas/patient";
+import {Patient} from "../schemas";
 
 type CreatePatientParameters = Parameters<{ patient: Patient }>
 
@@ -14,7 +14,7 @@ export class PatientNablaClient implements Client<Patient> {
 
     create = async ({projectId, data: {patient}}: CreatePatientParameters): Promise<Patient> => {
         const patientPath: string = buildPath(
-            [medcaseConstants.PROJECT, projectId, medcaseConstants.EHR, medcaseConstants.NABLA, medcaseConstants.PATIENT]
+            [medcaseConstants.TELEHEALTH, medcaseConstants.PROJECT, projectId, medcaseConstants.EHR, medcaseConstants.NABLA, medcaseConstants.PATIENT]
         );
 
         const response: AxiosResponse = await this.apiClient.makeRetryCallWithRefreshTokenRetryHook({

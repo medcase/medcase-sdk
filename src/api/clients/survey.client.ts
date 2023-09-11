@@ -3,7 +3,7 @@ import {buildPath} from "../../utils/build.query";
 import {medcaseConstants} from "../../config";
 import {AxiosResponse} from "axios";
 import {HttpMethod} from "../schemas/http.method";
-import {Survey, SurveyRequest} from "../schemas/survey";
+import {Survey, SurveyRequest} from "../schemas";
 import {ApiClient} from "./api.client";
 
 type CreateSurveyParameters = Parameters<{ patientId: string, survey: SurveyRequest }>
@@ -14,7 +14,7 @@ export class SurveyClient implements Client<Survey> {
 
     create = async ({projectId, data: {patientId, survey}}: CreateSurveyParameters): Promise<Survey> => {
         const createSurveyPath: string = buildPath(
-            [medcaseConstants.PROJECT, projectId, medcaseConstants.PATIENT, patientId, medcaseConstants.SURVEY]
+            [medcaseConstants.TELEHEALTH, medcaseConstants.PROJECT, projectId, medcaseConstants.PATIENT, patientId, medcaseConstants.SURVEY]
         )
 
         const response: AxiosResponse = await this.apiClient.makeRetryCallWithRefreshTokenRetryHook({
