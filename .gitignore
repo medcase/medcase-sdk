@@ -1,5 +1,10 @@
-*.log
-.DS_Store
+.idea
 node_modules
 dist
-.idea
+build
+.env
+*.iml
+.DS_Store
+yarn-error.log
+.eslintcache
+contracts
