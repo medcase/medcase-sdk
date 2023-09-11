@@ -9,6 +9,13 @@
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
   },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "engines": {
+    "node": ">=14"
+  },
   "scripts": {
     "build": "tsc",
     "lint": "eslint . --ext .ts"
