@@ -1,4 +1,4 @@
-import {Availability} from "../schemas/availability";
+import {Availability} from "../schemas";
 import {ApiClient} from "./api.client";
 import {AxiosResponse} from "axios";
 import {HttpMethod} from "../schemas/http.method";
