@@ -1,5 +1,6 @@
-import {AuthRequestBody, AuthToken, ClientCredentials} from "../schemas/client.interfaces";
+import {AuthRequestBody, AuthToken} from "../schemas/client.interfaces";
 import axios, {AxiosResponse} from "axios";
+import {ClientCredentials} from "../schemas";
 
 const DEFAULT_HEADERS: object = {"Content-Type": "application/json"};
 const DEFAULT_GRANT_TYPE: string = "client_credentials";

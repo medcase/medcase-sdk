@@ -1,9 +1,10 @@
 import axios, {AxiosInstance, AxiosResponse, InternalAxiosRequestConfig} from "axios";
-import {ClientCredentials, RetryCallError} from "../schemas/client.interfaces";
+import {RetryCallError} from "../schemas/client.interfaces";
 import {AuthClient} from "./auth.client";
 import {AppLogger} from "@medcase/logger-lib";
 import {HttpMethod} from "../schemas/http.method";
 import {medcaseConstants} from "../../config";
+import {ClientCredentials} from "../schemas";
 
 export class ApiClient {
     private authApi: AuthClient;
