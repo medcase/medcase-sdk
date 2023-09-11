@@ -5,8 +5,15 @@ import {SurveyClient} from "./api/clients/survey.client";
 import {PatientNablaClient} from "./api/clients/patient.nabla.client";
 import {ClientCredentials} from "./api/schemas";
 
-export class MedcaseSDK {
-    private readonly apiClient: ApiClient;
+export interface MedcaseSDKInterface {
+    availabilities: AvailabilitiesClient;
+    patientNabla: PatientNablaClient;
+    survey: SurveyClient;
+    apiClient: ApiClient;
+}
+
+export class MedcaseSDK implements MedcaseSDKInterface {
+    public apiClient: ApiClient;
     public availabilities: AvailabilitiesClient;
     public patientNabla: PatientNablaClient
     public survey: SurveyClient;
