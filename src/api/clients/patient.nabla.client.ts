@@ -4,7 +4,7 @@ import {HttpMethod} from "../schemas/http.method";
 import {buildPath} from "../../utils/build.query";
 import {medcaseConstants} from "../../config";
 import {AxiosResponse} from "axios";
-import {Patient} from "../schemas/medcase.objects/patient";
+import {Patient} from "../schemas/patient";
 
 type CreatePatientParameters = Parameters<{ patient: Patient }>
 

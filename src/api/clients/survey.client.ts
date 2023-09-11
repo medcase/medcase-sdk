@@ -3,7 +3,7 @@ import {buildPath} from "../../utils/build.query";
 import {medcaseConstants} from "../../config";
 import {AxiosResponse} from "axios";
 import {HttpMethod} from "../schemas/http.method";
-import {Survey, SurveyRequest} from "../schemas/medcase.objects/survey";
+import {Survey, SurveyRequest} from "../schemas/survey";
 import {ApiClient} from "./api.client";
 
 type CreateSurveyParameters = Parameters<{ patientId: string, survey: SurveyRequest }>
