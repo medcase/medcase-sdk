@@ -16,10 +16,7 @@ export class ApiClient {
         return request;
     };
 
-    constructor(config: {
-        clientCredentials: ClientCredentials,
-    }
-    ) {
+    constructor(config: { clientCredentials: ClientCredentials, }) {
         this.authApi = new AuthClient(config.clientCredentials);
         this.apiURL = config.clientCredentials.url;
 
@@ -30,12 +27,15 @@ export class ApiClient {
     call = async (parameters: {
         method: HttpMethod,
         path: string,
-        body?: unknown
+        body?: unknown,
+        headers?: { [key: string]: string }
     }): Promise<AxiosResponse> => {
+
         const retryCall = async (): Promise<AxiosResponse> => this.api.request<AxiosResponse>({
             method: parameters.method,
             url: `${this.apiURL}${parameters.path}`,
             data: parameters.body,
+            headers: parameters.headers
         })
 
         const medcaseInvalidTokenRetryCondition = (error: {

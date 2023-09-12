@@ -1,9 +1,9 @@
-import {ApiClient} from "./api.client";
-import {Client, Parameters} from "../schemas/client";
-import {HttpMethod} from "../schemas/http.method";
-import {medcaseConstants} from "../../config";
+import {ApiClient} from "../api.client";
+import {Client, Parameters} from "../../schemas/client";
+import {HttpMethod} from "../../schemas/http.method";
+import {medcaseConstants} from "../../../config";
 import {AxiosResponse} from "axios";
-import {Patient} from "../schemas";
+import {Patient} from "../../schemas";
 
 type CreatePatientParameters = Parameters<{ patient: Patient }>
 
