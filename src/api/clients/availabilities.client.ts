@@ -1,4 +1,4 @@
-import {Availability} from "../schemas/medcase.objects/availability";
+import {Availability} from "../schemas";
 import {ApiClient} from "./api.client";
 import {HttpMethod} from "../schemas/http.method";
 import {medcaseConstants} from "../../config";
