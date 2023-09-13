@@ -1,9 +1,9 @@
-import {ApiClient} from "../api.client";
-import {Client, Parameters} from "../../schemas/client";
-import {HttpMethod} from "../../schemas/http.method";
-import {medcaseConstants} from "../../../config";
+import {ApiClient} from "./api.client";
+import {Client, Parameters} from "../schemas/client";
+import {HttpMethod} from "../schemas/http.method";
+import {medcaseConstants} from "../../config";
 import {AxiosResponse} from "axios";
-import {FileResponse} from "../../schemas/file";
+import {FileResponse} from "../schemas/file";
 
 type CreateFileParameters = Parameters<{
     file: ReadableStream,
@@ -12,7 +12,7 @@ type CreateFileParameters = Parameters<{
     contentTypeHeader: string
 }>
 
-export class FileNablaClient implements Client<FileResponse> {
+export class FileClient implements Client<FileResponse> {
     constructor(private apiClient: ApiClient) {
     }
 

@@ -2,13 +2,13 @@ import {ApiClient} from "./api/clients/api.client";
 import {AvailabilitiesClient} from "./api/clients/availabilities.client"
 import {SurveyClient} from "./api/clients/survey.client";
 import {ClientCredentials} from "./api/schemas";
-import {PatientNablaClient} from "./api/clients/nabla/patient.nabla.client";
-import {FileNablaClient} from "./api/clients/nabla/file.nabla.client";
+import {PatientClient} from "./api/clients/patient.client";
+import {FileClient} from "./api/clients/file.client";
 
 export interface MedcaseSDKInterface {
     availabilities: AvailabilitiesClient;
-    patientNabla: PatientNablaClient;
-    fileNabla: FileNablaClient
+    patient: PatientClient;
+    file: FileClient
     survey: SurveyClient;
     apiClient: ApiClient;
 }
@@ -16,15 +16,15 @@ export interface MedcaseSDKInterface {
 export class MedcaseSDK implements MedcaseSDKInterface {
     public apiClient: ApiClient;
     public availabilities: AvailabilitiesClient;
-    public patientNabla: PatientNablaClient
+    public patient: PatientClient
     public survey: SurveyClient;
-    public fileNabla: FileNablaClient;
+    public file: FileClient;
 
     constructor(config: { clientCredentials: ClientCredentials, }) {
         this.apiClient = new ApiClient(config);
         this.availabilities = new AvailabilitiesClient(this.apiClient);
-        this.patientNabla = new PatientNablaClient(this.apiClient);
+        this.patient = new PatientClient(this.apiClient);
         this.survey = new SurveyClient(this.apiClient);
-        this.fileNabla = new FileNablaClient(this.apiClient);
+        this.file = new FileClient(this.apiClient);
     }
 }
