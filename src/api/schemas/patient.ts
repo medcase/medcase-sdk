@@ -1,5 +1,6 @@
-export interface Patient {
-    id: string
+export type Patient = { id: string } & PatientRequest
+
+export type PatientRequest = {
     firstName: string
     lastName: string
     email?: string
