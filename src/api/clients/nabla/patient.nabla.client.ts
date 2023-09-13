@@ -3,9 +3,9 @@ import {Client, Parameters} from "../../schemas/client";
 import {HttpMethod} from "../../schemas/http.method";
 import {medcaseConstants} from "../../../config";
 import {AxiosResponse} from "axios";
-import {Patient} from "../../schemas";
+import {Patient, PatientRequest} from "../../schemas";
 
-type CreatePatientParameters = Parameters<{ patient: Patient }>
+type CreatePatientParameters = Parameters<{ patient: PatientRequest }>
 
 export class PatientNablaClient implements Client<Patient> {
     constructor(private apiClient: ApiClient) {
