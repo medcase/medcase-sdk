@@ -6,7 +6,7 @@ import {ApiClient} from "./api.client";
 import {Parameters} from "../schemas/client";
 
 type CreateSurveyParameters = Parameters<{ patientId: string, survey: SurveyRequest }>
-type RetrieveSurveyParameters = Parameters<{ patientId: string, surveyId: string }>
+type RetrieveSurveyParameters = Parameters<{ surveyId: string }>
 
 export class SurveyClient implements Client<Survey> {
     constructor(private apiClient: ApiClient) {
