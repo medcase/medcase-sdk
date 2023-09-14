@@ -1,6 +1,6 @@
 {
   "name": "@medcase/medcase-sdk",
-  "version": "1.2.3",
+  "version": "1.2.4-beta",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "repository": "https://github.com/medcase/medcase-sdk",
